@@ -13,6 +13,9 @@ jobs:
     - name: Confirm git config is not set
       shell: bash
       run: |
+        # DEBUG BEGIN
+        set -x
+        # DEBUG END
         git_config="$(git config -l)"
         [[ "$git_config" =~ "user.name" ]] && \
           echo >&2 "Unexpected git config user.name."$'\n'"${git_config}" && exit 1
