@@ -14,7 +14,8 @@ jobs:
       shell: bash
       run: |
         git_config="$(git config -l)"
-        [[ "$git_config" =~ "user.name" ]] && echo >&2 "Unexpected git config user.name." && exit 1
+        [[ "$git_config" =~ "user.name" ]] && \
+          echo >&2 "Unexpected git config user.name."$'\n'"${git_config}" && exit 1
     - uses: ./
     - name: Confirm git config is set
       shell: bash
