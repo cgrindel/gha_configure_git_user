@@ -1,0 +1,33 @@
+name: CI for PR Merge
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_call:
+
+jobs:
+  macos_build:
+    runs-on: macos-11.0
+    steps:
+    - uses: actions/checkout@v2
+    - name: Confirm git config is not set
+      shell: bash
+      run: |
+        git_config="$(git config -l)"
+        [[ "$git_config" =~ "user.name" ]] && echo >&2 "Unexpected git config user.name." && exit 1
+    - uses: ./
+    - name: Confirm git config is set
+      shell: bash
+      run: |
+        git_config="$(git config -l)"
+        [[ "$git_config" =~ "user.name=${GITHUB_ACTOR}" ]] || \
+           (echo >&2 "Unexpected git config user.name." && exit 1)
+
+
+  # ubuntu_build:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     CC: clang
+  #   steps:
+  #   - uses: actions/checkout@v2
+
