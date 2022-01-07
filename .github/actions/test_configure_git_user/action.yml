@@ -1,0 +1,22 @@
+name: Test Configure the Git Repository User
+
+runs:
+  using: composite
+  steps:
+    - name: Confirm git config is not set
+      shell: bash
+      run: |
+        git_config="$(git config -l)"
+        [[ "$git_config" =~ "user.name" ]] && \
+          echo >&2 "Unexpected git config user.name."$'\n'"$git_config" && exit 1
+        echo "user.name not found"
+    - uses: ./
+      name: Execute configure_git_user
+    - name: Confirm git config is set
+      shell: bash
+      run: |
+        git_config="$(git config -l)"
+        [[ "$git_config" =~ "user.name=${GITHUB_ACTOR}" ]] || \
+           (echo >&2 "Unexpected git config user.name." && exit 1)
+    - uses: ./
+      name: Execute configure_git_user with user.name present
