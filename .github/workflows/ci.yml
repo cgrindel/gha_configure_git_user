@@ -6,14 +6,52 @@ on:
   workflow_call:
 
 jobs:
-  macos_build:
-    runs-on: macos-11.0
-    steps:
-    - uses: actions/checkout@v2
-    - uses: ./.github/actions/test_configure_git_user
-  ubuntu_build:
+
+  test_with_defaults:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/actions/test_configure_git_user
+      with:
+        expected_user_name: ${{ github.actor }}
+        expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
+  test_with_path:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a git repo
+      id: create_git_repo
+      shell: bash
+      run: |
+        repo_path="${HOME}"/test_git_repo
+        mkdir -p "${repo_path}"
+        cd "${repo_path}"
+        git init -b main
+        echo "::set-output name=repo_path::${repo_path}"
+    - uses: ./.github/actions/test_configure_git_user
+      with:
+        repo_path: ${{ steps.create_git_repo.outputs.repo_path }}
+        expected_user_name: ${{ github.actor }}
+        expected_user_email: ${{ github.actor }}@users.noreply.github.com
+
+  test_with_user_info:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/test_configure_git_user
+      with:
+        input_user_name: very_good_user
+        input_user_email: very_good_user@example.org
+        expected_user_name: very_good_user
+        expected_user_email: very_good_user@example.org
+
+
+  all_ci_tests:
+    runs-on: ubuntu-20.04
+    needs: [test_with_defaults, test_with_path, test_with_user_info]
+    steps:
+      - name: Join all results
+        shell: bash
+        run: |
+          echo "All is well!"

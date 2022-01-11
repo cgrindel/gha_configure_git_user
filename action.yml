@@ -1,17 +1,49 @@
 name: Configure the Git Repository User
 description: Configures the git user in preparation for performing commits.
 
+inputs:
+  path:
+    type: string
+    description: "The path to the git repository."
+  user_name:
+    type: string
+    description: "The user.name value. Default: `github.actor`."
+  user_email:
+    type: string
+    description: "The user.email value. Default: `<github.actor>@users.noreply.github.com`"
+
 runs:
   using: composite
   steps:
+
+    - name: Select the name value
+      uses: cgrindel/gha_select_value@v1
+      id: select_user_name
+      with:
+        value0: ${{ inputs.user_name }}
+        value1: ${{ github.actor }}
+
+    - name: Select the email value
+      uses: cgrindel/gha_select_value@v1
+      id: select_user_email
+      with:
+        value0: ${{ inputs.user_email }}
+        value1: ${{ github.actor }}@users.noreply.github.com
+
     - name: Configure the Git Repository User
       shell: bash
+      env:
+        REPO_PATH: ${{ inputs.path }}
+        GIT_USER_NAME: ${{ steps.select_user_name.outputs.selected_value }}
+        GIT_USER_EMAIL: ${{ steps.select_user_email.outputs.selected_value }}
       run: |
+        [[ -z "${REPO_PATH:-}" ]] || cd "${REPO_PATH}"
+
         # Only set the git user if it is not set.
         git_config="$(git config -l)"
         [[ "$git_config" =~ "user.name" ]] && exit 0
 
         # Ensure that a user is configured
-        git config user.name "${GITHUB_ACTOR}"
-        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git config user.name "${GIT_USER_NAME}"
+        git config user.email "${GIT_USER_EMAIL}"
 
