@@ -1,22 +1,77 @@
 name: Test Configure the Git Repository User
 
+inputs:
+  gha_configure_git_user_path:
+    type: string
+    required: true
+  expected_user_name:
+    type: string
+    required: true
+  expected_user_email:
+    type: string
+    required: true
+  input_user_name:
+    type: string
+  input_user_email:
+    type: string
+  repo_path:
+    type: string
+
 runs:
   using: composite
   steps:
+
     - name: Confirm git config is not set
       shell: bash
+      env:
+        REPO_PATH: ${{ inputs.path }}
       run: |
+        [[ -z "${REPO_PATH:-}" ]] || cd "${REPO_PATH}"
+
         git_config="$(git config -l)"
         [[ "$git_config" =~ "user.name" ]] && \
           echo >&2 "Unexpected git config user.name."$'\n'"$git_config" && exit 1
         echo "user.name not found"
-    - uses: ./
+
+    - uses: ${{ inputs.gha_configure_git_user_path }}
       name: Execute configure_git_user
+      with:
+        path: ${{ inputs.repo_path }}
+        user_name: ${{ inputs.input_user_name }}
+        user_email: ${{ inputs.input_user_email }}
+
     - name: Confirm git config is set
       shell: bash
+      env:
+        REPO_PATH: ${{ inputs.path }}
+        EXPECTED_USER_NAME: ${{ inputs.expected_user_name }}
+        EXPECTED_USER_EMAIL: ${{ inputs.expected_user_email }}
       run: |
+        [[ -z "${REPO_PATH:-}" ]] || cd "${REPO_PATH}"
         git_config="$(git config -l)"
-        [[ "$git_config" =~ "user.name=${GITHUB_ACTOR}" ]] || \
+        [[ "$git_config" =~ "user.name=${EXPECTED_USER_NAME}" ]] || \
            (echo >&2 "Unexpected git config user.name." && exit 1)
-    - uses: ./
+        [[ "$git_config" =~ "user.email=${EXPECTED_USER_EMAIL}" ]] || \
+           (echo >&2 "Unexpected git config user.email." && exit 1)
+
+    - uses: ${{ inputs.gha_configure_git_user_path }}
       name: Execute configure_git_user with user.name present
+      with:
+        path: ${{ inputs.repo_path }}
+        user_name: VERY_BAD_USER
+        user_email: VERY_BAD_USER@example.org
+
+    - name: Confirm git config has not changed
+      shell: bash
+      env:
+        REPO_PATH: ${{ inputs.path }}
+        EXPECTED_USER_NAME: ${{ inputs.expected_user_name }}
+        EXPECTED_USER_EMAIL: ${{ inputs.expected_user_email }}
+      run: |
+        [[ -z "${REPO_PATH:-}" ]] || cd "${REPO_PATH}"
+        git_config="$(git config -l)"
+        [[ "$git_config" =~ "user.name=${EXPECTED_USER_NAME}" ]] || \
+           (echo >&2 "Unexpected git config user.name." && exit 1)
+        [[ "$git_config" =~ "user.email=${EXPECTED_USER_EMAIL}" ]] || \
+           (echo >&2 "Unexpected git config user.email." && exit 1)
+

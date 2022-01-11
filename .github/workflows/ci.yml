@@ -6,14 +6,25 @@ on:
   workflow_call:
 
 jobs:
-  macos_build:
-    runs-on: macos-11.0
-    steps:
-    - uses: actions/checkout@v2
-    - uses: ./.github/actions/test_configure_git_user
-  ubuntu_build:
+
+  test_with_defaults:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/actions/test_configure_git_user
+      with:
+        gha_configure_git_user_path: ./
+        expected_user_name: ${{ github.actor }}
+        expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
+  # test_without_path:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: ./.github/actions/test_configure_git_user
+
+#   test_without_path:
+#     runs-on: ubuntu-20.04
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: ./.github/actions/test_configure_git_user
