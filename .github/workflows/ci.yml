@@ -24,6 +24,9 @@ jobs:
       id: create_git_repo
       shell: bash
       run: |
+        # DEBUG BEGIN
+        set -x
+        # DEBUG END
         repo_path="${HOME}"/test_git_repo
         mkdir -p "${repo_path}"
         cd "${repo_path}"
