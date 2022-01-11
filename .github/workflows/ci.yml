@@ -38,7 +38,7 @@ jobs:
         expected_user_name: ${{ github.actor }}
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
-  all_test_ci_tests:
+  all_ci_tests:
     runs-on: ubuntu-20.04
     needs: [test_with_defaults, test_with_path]
     steps:
