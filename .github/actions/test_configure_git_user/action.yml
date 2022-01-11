@@ -21,7 +21,7 @@ runs:
     - name: Confirm git config is not set
       shell: bash
       env:
-        REPO_PATH: ${{ inputs.path }}
+        REPO_PATH: ${{ inputs.repo_path }}
       run: |
         [[ -z "${REPO_PATH:-}" ]] || cd "${REPO_PATH}"
 
@@ -40,7 +40,7 @@ runs:
     - name: Confirm git config is set
       shell: bash
       env:
-        REPO_PATH: ${{ inputs.path }}
+        REPO_PATH: ${{ inputs.repo_path }}
         EXPECTED_USER_NAME: ${{ inputs.expected_user_name }}
         EXPECTED_USER_EMAIL: ${{ inputs.expected_user_email }}
       run: |
@@ -61,7 +61,7 @@ runs:
     - name: Confirm git config has not changed
       shell: bash
       env:
-        REPO_PATH: ${{ inputs.path }}
+        REPO_PATH: ${{ inputs.repo_path }}
         EXPECTED_USER_NAME: ${{ inputs.expected_user_name }}
         EXPECTED_USER_EMAIL: ${{ inputs.expected_user_email }}
       run: |
