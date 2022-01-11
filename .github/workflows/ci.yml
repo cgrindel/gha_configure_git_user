@@ -35,7 +35,7 @@ jobs:
 
   all_test_ci_tests:
     runs-on: ubuntu-20.04
-    needs: [test_with_defaults, test_without_path]
+    needs: [test_with_defaults, test_with_path]
     steps:
       - name: Join all results
         shell: bash
