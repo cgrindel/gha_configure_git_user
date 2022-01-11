@@ -10,7 +10,7 @@ inputs:
     description: "The user.name value. Default: `github.actor`."
   user_email:
     type: string
-    description: "The user.email value. Default: `${{ github.actor }}@users.noreply.github.com`"
+    description: "The user.email value. Default: `<github.actor>@users.noreply.github.com`"
 
 runs:
   using: composite
