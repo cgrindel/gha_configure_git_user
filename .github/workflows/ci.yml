@@ -32,6 +32,14 @@ jobs:
         expected_user_name: ${{ github.actor }}
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
+  all_test_ci_tests:
+    runs-on: ubuntu-20.04
+    needs: [test_with_defaults, test_without_path]
+    steps:
+      - name: Join all results
+        shell: bash
+        run: |
+          echo "All is well!"
 
   # test_without_path:
   #   runs-on: ubuntu-20.04
