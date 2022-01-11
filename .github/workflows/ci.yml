@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Create a git repo
-      id: init_git_repo
+      id: create_git_repo
       shell: bash
       run: |
         repo_path="${HOME}"/test_git_repo
@@ -31,7 +31,7 @@ jobs:
         echo "::set-output name=repo_path::${repo_path}"
     - uses: ./.github/actions/test_configure_git_user
       with:
-        repo_path: ${{ steps.init_git_repo.outputs.repo_path }}
+        repo_path: ${{ steps.create_git_repo.outputs.repo_path }}
         expected_user_name: ${{ github.actor }}
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
