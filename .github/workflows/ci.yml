@@ -16,6 +16,23 @@ jobs:
         expected_user_name: ${{ github.actor }}
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
+  test_with_path:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a git repo
+      shell: bash
+      run: |
+        repo_path="${HOME}"/test_git_repo
+        cd "${repo_path}"
+        git init -b main
+    - uses: ./.github/actions/test_configure_git_user
+      with:
+        repo_path: ~/test_git_repo
+        expected_user_name: ${{ github.actor }}
+        expected_user_email: ${{ github.actor }}@users.noreply.github.com
+
+
   # test_without_path:
   #   runs-on: ubuntu-20.04
   #   steps:
