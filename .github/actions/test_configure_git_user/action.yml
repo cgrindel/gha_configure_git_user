@@ -1,9 +1,6 @@
 name: Test Configure the Git Repository User
 
 inputs:
-  gha_configure_git_user_path:
-    type: string
-    required: true
   expected_user_name:
     type: string
     required: true
@@ -33,7 +30,7 @@ runs:
           echo >&2 "Unexpected git config user.name."$'\n'"$git_config" && exit 1
         echo "user.name not found"
 
-    - uses: ${{ inputs.gha_configure_git_user_path }}
+    - uses: ./
       name: Execute configure_git_user
       with:
         path: ${{ inputs.repo_path }}
@@ -54,7 +51,7 @@ runs:
         [[ "$git_config" =~ "user.email=${EXPECTED_USER_EMAIL}" ]] || \
            (echo >&2 "Unexpected git config user.email." && exit 1)
 
-    - uses: ${{ inputs.gha_configure_git_user_path }}
+    - uses: ./
       name: Execute configure_git_user with user.name present
       with:
         path: ${{ inputs.repo_path }}

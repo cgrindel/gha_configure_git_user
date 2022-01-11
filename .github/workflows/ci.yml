@@ -13,7 +13,6 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ./.github/actions/test_configure_git_user
       with:
-        gha_configure_git_user_path: ./
         expected_user_name: ${{ github.actor }}
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
