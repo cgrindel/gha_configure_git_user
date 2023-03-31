@@ -28,7 +28,7 @@ jobs:
         mkdir -p "${repo_path}"
         cd "${repo_path}"
         git init -b main
-        echo "::set-output name=repo_path::${repo_path}"
+        echo "repo_path=${repo_path}" >> $GITHUB_OUTPUT
     - uses: ./.github/actions/test_configure_git_user
       with:
         repo_path: ${{ steps.create_git_repo.outputs.repo_path }}
