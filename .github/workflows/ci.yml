@@ -8,7 +8,7 @@ on:
 jobs:
 
   test_with_defaults:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - uses: ./.github/actions/test_configure_git_user
@@ -17,7 +17,7 @@ jobs:
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
   test_with_path:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - name: Create a git repo
@@ -36,7 +36,7 @@ jobs:
         expected_user_email: ${{ github.actor }}@users.noreply.github.com
 
   test_with_user_info:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - uses: ./.github/actions/test_configure_git_user
@@ -48,7 +48,7 @@ jobs:
 
 
   all_ci_tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [test_with_defaults, test_with_path, test_with_user_info]
     steps:
       - name: Join all results
